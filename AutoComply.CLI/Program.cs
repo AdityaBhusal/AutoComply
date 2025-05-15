@@ -7,6 +7,8 @@ class Program
         var pdfPath = "C:/Users/Asus/OneDrive/Desktop/samplepdff.pdf";
         PdfDocument pdfDocument = PdfDocument.Open(pdfPath);
 
+        var pdfPages = pdfDocument.GetPages();
 
+        
     }
 }
