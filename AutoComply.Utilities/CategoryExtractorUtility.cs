@@ -6,7 +6,11 @@ namespace CategoryExtractor
         {
             var lower = text.ToLowerInvariant();
 
-            if (lower.Contains("gdpr") || lower.Contains("personal data") || lower.Contains("privacy"))
+            if (
+                lower.Contains("gdpr")
+                || lower.Contains("personal data")
+                || lower.Contains("privacy")
+            )
                 return "Privacy";
 
             if (lower.Contains("security") || lower.Contains("access control"))
@@ -15,7 +19,11 @@ namespace CategoryExtractor
             if (lower.Contains("record") || lower.Contains("retention") || lower.Contains("audit"))
                 return "Record-Keeping";
 
-            if (lower.Contains("bribe") || lower.Contains("fraud") || lower.Contains("whistleblower"))
+            if (
+                lower.Contains("bribe")
+                || lower.Contains("fraud")
+                || lower.Contains("whistleblower")
+            )
                 return "Anti-Corruption";
 
             if (lower.Contains("training") || lower.Contains("awareness"))
