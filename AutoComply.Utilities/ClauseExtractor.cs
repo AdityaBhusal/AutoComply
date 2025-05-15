@@ -9,13 +9,13 @@ public static class ClauseExtractorUtility
         if (string.IsNullOrEmpty(text))
             return clauses;
 
-        var regSplitText = Regex.Split(text, @"?=\d\.\s");
+        var regSplitText = Regex.Split(text, @"(?=\n?\s*\d+\.\s)");
 
-        foreach (var splitText in regSplitPages)
+        foreach (var splitText in regSplitText)
         {
             var trimmedText = splitText.Trim();
 
-            if (trimmedText.Text == null) continue;
+            if (trimmedText == null) continue;
 
             clauses.Add
             (
