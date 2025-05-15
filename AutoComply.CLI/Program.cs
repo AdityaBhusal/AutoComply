@@ -27,12 +27,16 @@ class Program
                 );
                 foreach (var singleClause in extractedClauses)
                 {
-                    if (string.IsNullOrEmpty(singleClause.Text))
+                    if (
+                        string.IsNullOrEmpty(singleClause.Text)
+                        || clauses.Exists(x => x.Text == singleClause.Text)
+                    )
                         continue;
                     clauses.Insert(singleClause);
                     insertionsCounter++;
                 }
             }
+
             System.Console.WriteLine("Total insertions made to db: " + insertionsCounter);
         }
     }
