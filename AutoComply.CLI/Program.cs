@@ -17,12 +17,23 @@ class Program
         )
         {
             var clauses = db.GetCollection<Clause>("clauses");
+            var insertionsCounter = 0;
 
             foreach (var page in pdfPages)
             {
-                var extractedClauses = ClauseExtractorUtility.ClassExtractor(page);
-                
+                var extractedClauses = ClauseExtractorUtility.ClauseExtractor(
+                    page.Text,
+                    page.Number
+                );
+                foreach (var singleClause in extractedClauses)
+                {
+                    if (string.IsNullOrEmpty(singleClause.Text))
+                        continue;
+                    clauses.Insert(singleClause);
+                    insertionsCounter++;
+                }
             }
+            System.Console.WriteLine("Total insertions made to db: " + insertionsCounter);
         }
     }
 }
