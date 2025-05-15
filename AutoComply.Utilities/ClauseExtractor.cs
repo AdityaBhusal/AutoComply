@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using CategoryExtractor;
 
 public static class ClauseExtractorUtility
 {
@@ -15,15 +16,15 @@ public static class ClauseExtractorUtility
         {
             var trimmedText = splitText.Trim();
 
-            if (trimmedText == null) continue;
+            if (trimmedText == null)
+                continue;
 
-            clauses.Add
-            (
+            clauses.Add(
                 new Clause
                 {
                     Text = trimmedText,
                     Page = page,
-                    Category = CategoryExtractor(trimmedText)
+                    Category = CategoryExtractorUtility.CategoryExtractor(trimmedText)
                 }
             );
         }
