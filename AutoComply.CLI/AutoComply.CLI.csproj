@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.21" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
     <PackageReference Include="UglyToad.PdfPig" Version="1.7.0-custom-5" />
   </ItemGroup>
 

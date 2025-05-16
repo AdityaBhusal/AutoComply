@@ -1,7 +1,17 @@
 ﻿using LiteDB;
+using Microsoft.Extensions.Configuration;
 using UglyToad.PdfPig;
 
-class Program
+var config = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false)
+    .Build();
+
+string apiKey = config["OpenAI:ApiKey"];
+string model = config["OpenAI:Model"];
+
+
+partial class Program
 {
     static void Main()
     {
