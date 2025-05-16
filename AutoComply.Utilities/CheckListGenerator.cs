@@ -10,7 +10,7 @@ public class ChecklistGenerator
         _kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion("gpt-3.5-turbo", apiKey).Build();
     }
 
-    public async Task<string> GenerateChecklistAsync(string clause)
+    public async Task<string> GenerateChecklistAsync(string clauseText)
     {
         var prompt =
             @"
@@ -22,7 +22,7 @@ Checklist:";
             prompt,
             new OpenAIPromptExecutionSettings { MaxTokens = 150 }
         );
-        var result = await _kernel.InvokeAsync(func, new() { ["input"] = clause });
+        var result = await _kernel.InvokeAsync(func, new() { ["input"] = clauseText });
         return result.ToString().Trim();
     }
 }
