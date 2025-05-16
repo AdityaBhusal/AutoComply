@@ -36,8 +36,14 @@ class Program
                     insertionsCounter++;
                 }
             }
+            System.Console.WriteLine("Inserted clauses to db: " + insertionsCounter);
 
-            System.Console.WriteLine("Total insertions made to db: " + insertionsCounter);
+            foreach (var sentence in clauses.FindAll())
+            {
+                System.Console.WriteLine("[Page: " + sentence.Page + "]");
+                System.Console.WriteLine("[Category: " + sentence.Category + "]");
+                System.Console.WriteLine("[Clause: " + sentence.Text + "]");
+            }
         }
     }
 }
