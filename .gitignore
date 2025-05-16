@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+# Ignore local app config with secrets
+AutoComply.CLI/appsettings.json
