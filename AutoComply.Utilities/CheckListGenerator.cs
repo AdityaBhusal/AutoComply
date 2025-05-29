@@ -1,28 +1,55 @@
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+// Modified ChecklistGenerator.cs
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
-public class ChecklistGenerator
+public class QwenChecklistGenerator
 {
-    private readonly Kernel _kernel;
+    private readonly HttpClient _client = new();
+    private const string ApiUrl =
+        "https://api-inference.huggingface.co/models/Qwen/Qwen3-235B-A22B";
 
-    public ChecklistGenerator(string apiKey)
+    public QwenChecklistGenerator(string hfApiKey)
     {
-        _kernel = Kernel.CreateBuilder().AddOpenAIChatCompletion("gpt-3.5-turbo", apiKey).Build();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            hfApiKey
+        );
     }
 
     public async Task<string> GenerateChecklistAsync(string clauseText)
     {
         var prompt =
-            @"
-Instruction: Convert the legal clause below into a simple checklist item.
-Clause: {{$input}}
-Checklist:";
+            $@"Convert this legal clause into a numbered checklist. Use 5 items maximum.
+        Clause: {clauseText}
+        Checklist: 1.";
 
-        var func = _kernel.CreateFunctionFromPrompt(
-            prompt,
-            new OpenAIPromptExecutionSettings { MaxTokens = 150 }
+        var response = await _client.PostAsync(
+            ApiUrl,
+            new StringContent(
+                JsonSerializer.Serialize(
+                    new
+                    {
+                        inputs = prompt,
+                        parameters = new { max_new_tokens = 150, temperature = 0.3 }
+                    }
+                ),
+                Encoding.UTF8,
+                "application/json"
+            )
         );
-        var result = await _kernel.InvokeAsync(func, new() { ["input"] = clauseText });
-        return result.ToString().Trim();
+
+        var content = await response.Content.ReadAsStringAsync();
+        return ParseChecklistResponse(content);
+    }
+
+    private string? ParseChecklistResponse(string jsonResponse)
+    {
+        using var doc = JsonDocument.Parse(jsonResponse);
+        return doc.RootElement[0]
+            .GetProperty("generated_text")
+            .GetString()
+            ?.Split("Checklist:")[1]
+            .Trim();
     }
 }

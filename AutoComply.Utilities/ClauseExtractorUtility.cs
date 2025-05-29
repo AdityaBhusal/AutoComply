@@ -1,10 +1,19 @@
 ﻿using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CategoryExtractor;
+using Microsoft.Extensions.Configuration;
 
+// Modified ClauseExtractorUtility.cs
 public static class ClauseExtractorUtility
 {
-    public static List<Clause> ClauseExtractor(string text, int page)
+    public static async Task<List<Clause>> ClauseExtractor(string text, int page)
     {
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+        var generator = new QwenChecklistGenerator(config["HuggingFace:ApiKey"]);
+
+
+
         var clauses = new List<Clause>();
 
         if (string.IsNullOrEmpty(text))
@@ -24,7 +33,8 @@ public static class ClauseExtractorUtility
                 {
                     Text = trimmedText,
                     Page = page,
-                    Category = CategoryExtractorUtility.CategoryExtractor(trimmedText)
+                    Category = CategoryExtractorUtility.CategoryExtractor(trimmedText),
+                    Checklist = await generator.GenerateChecklistAsync(trimmedText)
                 }
             );
         }

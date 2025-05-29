@@ -1,19 +1,11 @@
-﻿using LiteDB;
-using Microsoft.Extensions.Configuration;
+﻿using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
+using LiteDB;
 using UglyToad.PdfPig;
 
-var config = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false)
-    .Build();
-
-string apiKey = config["OpenAI:ApiKey"];
-string model = config["OpenAI:Model"];
-
-
-partial class Program
+class Program
 {
-    static void Main()
+    static async Task Main()
     {
         var pdfPath = "C:/Users/Asus/OneDrive/Desktop/samplepdff.pdf";
         PdfDocument pdfDocument = PdfDocument.Open(pdfPath);
@@ -31,11 +23,11 @@ partial class Program
 
             foreach (var page in pdfPages)
             {
-                var extractedClauses = ClauseExtractorUtility.ClauseExtractor(
+                var extractedClauses = await ClauseExtractorUtility.ClauseExtractor(
                     page.Text,
                     page.Number
                 );
-                foreach (var singleClause in extractedClauses)
+                foreach (var singleClause in extractedClauses.Take(1))
                 {
                     if (
                         string.IsNullOrEmpty(singleClause.Text)
@@ -50,9 +42,12 @@ partial class Program
 
             foreach (var sentence in clauses.FindAll())
             {
+
+                System.Console.WriteLine("[ID: " + sentence.Id + "]");
                 System.Console.WriteLine("[Page: " + sentence.Page + "]");
                 System.Console.WriteLine("[Category: " + sentence.Category + "]");
                 System.Console.WriteLine("[Clause: " + sentence.Text + "]");
+                System.Console.WriteLine("[Checklist: " + sentence.Checklist + "]");
             }
         }
     }

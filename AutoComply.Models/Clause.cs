@@ -4,4 +4,5 @@ public class Clause
     public required string Text { get; set; }
     public int Page { get; set; }
     public string? Category { get; set; }
+    public string Checklist{ get; set; }
 }
