@@ -13,7 +13,7 @@ namespace AutoComply.Utilities
             var finalClause = new List<string>();
 
             var endpoint = new Uri("https://models.github.ai/inference");
-            var credential = new AzureKeyCredential("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");
+            var credential = new AzureKeyCredential("GITHUB_TOKEN");
             var model = "openai/gpt-4o";
 
             var client = new ChatCompletionsClient(
