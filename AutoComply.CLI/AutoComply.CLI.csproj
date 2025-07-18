@@ -15,9 +15,16 @@
     <PackageReference Include="UglyToad.PdfPig" Version="1.7.0-custom-5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AutoComply.Models\AutoComply.Models.csproj" />
+  <ItemGroup><!-- <ProjectReference Include="..\AutoComply.Models\AutoComply.Models.csproj" />
+    <ProjectReference Include="..\AutoComply.Utilities\AutoComply.Utilities.csproj" /> -->
+  
     <ProjectReference Include="..\AutoComply.Utilities\AutoComply.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

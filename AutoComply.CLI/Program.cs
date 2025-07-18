@@ -1,53 +1,40 @@
-﻿using System.Data.Common;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Linq;
+using AutoComply.Utilities;
+using CategoryExtractor;
 using LiteDB;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 
 class Program
 {
-    static async Task Main()
+    static void Main()
     {
-        var pdfPath = "C:/Users/Asus/OneDrive/Desktop/samplepdff.pdf";
-        PdfDocument pdfDocument = PdfDocument.Open(pdfPath);
-
-        var pdfPages = pdfDocument.GetPages();
-
         using (
-            var db = new LiteDatabase(
-                @"C:/Users/Asus/OneDrive/Desktop/Coding Projects/AutoComply/AutoComply.Data/MyData.db"
-            )
+            PdfDocument document = PdfDocument.Open("C:/Users/Asus/OneDrive/Desktop/samplepdff.pdf")
         )
+        using (var db = new LiteDatabase(@"MyData.db"))
         {
-            var clauses = db.GetCollection<Clause>("clauses");
-            var insertionsCounter = 0;
-
-            foreach (var page in pdfPages)
+            var ClauseList = db.GetCollection<Clause>("Clauses");
+            foreach (Page page in document.GetPages())
             {
-                var extractedClauses = await ClauseExtractorUtility.ClauseExtractor(
-                    page.Text,
-                    page.Number
-                );
-                foreach (var singleClause in extractedClauses.Take(1))
+                System.Console.WriteLine("here");
+                if (ClauseExtractorUtility.Trimmer(page.Text) is null)
+                    continue;
+
+                foreach (var stringClause in ClauseExtractorUtility.Trimmer(page.Text))
                 {
-                    if (
-                        string.IsNullOrEmpty(singleClause.Text)
-                        || clauses.Exists(x => x.Text == singleClause.Text)
-                    )
-                        continue;
-                    clauses.Insert(singleClause);
-                    insertionsCounter++;
+                    ClauseList.Insert(new Clause()
+                    {
+                        Text = stringClause,
+                        Category = CategoryExtractorUtility.CategoryExtractor(stringClause)
+                     });
                 }
             }
-            System.Console.WriteLine("Inserted clauses to db: " + insertionsCounter);
-
-            foreach (var sentence in clauses.FindAll())
+            foreach (var clause in ClauseList.FindAll())
             {
-
-                System.Console.WriteLine("[ID: " + sentence.Id + "]");
-                System.Console.WriteLine("[Page: " + sentence.Page + "]");
-                System.Console.WriteLine("[Category: " + sentence.Category + "]");
-                System.Console.WriteLine("[Clause: " + sentence.Text + "]");
-                System.Console.WriteLine("[Checklist: " + sentence.Checklist + "]");
+                System.Console.WriteLine("ClauseId: " + clause.Id);
+                System.Console.WriteLine("ClauseCategory: " + clause.Category);
+                System.Console.WriteLine("ClauseText: " + clause.Text);
             }
         }
     }
