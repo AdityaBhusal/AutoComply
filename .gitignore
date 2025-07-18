@@ -401,3 +401,4 @@ FodyWeavers.xsd
 *.sln.iml
 # Ignore local app config with secrets
 AutoComply.CLI/appsettings.json
+AutoComply.CLI/MyData.db
